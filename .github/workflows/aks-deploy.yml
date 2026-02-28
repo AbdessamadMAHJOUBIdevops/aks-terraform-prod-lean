@@ -1,0 +1,65 @@
+
+name: Build and deploy to AKS
+
+on:
+    push:
+        branches: 
+            - main
+        paths:
+    # Le robot se réveille UNIQUEMENT si on modifie le code de l'app ou le K8s
+          - 'app/**'
+
+
+permissions:
+    id-token: write
+    contents: read
+
+
+env:
+  ACR_NAME: "acrmahjoubidev2026"
+  CLUSTER_NAME: "aks-dev-frc-001"
+  RG_NAME: "rg-aks-dev-frc"
+  IMAGE_NAME: "myapp"
+
+jobs:
+    build-and-deploy:
+        runs-on: ubuntu-latest
+        steps:
+          - name: checkout the code
+            uses: azure/login@v2
+            with:
+                client-id: ${{ secrets.AZURE_CLIENT_ID }}
+                tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+                subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+          - name: Connexion à l'ACR
+            run: az acr login --name ${{ env.ACR_NAME }}
+
+          - name: Build & Push de l'image Docker
+            run: |
+              # On utilise l'ID du commit GitHub comme tag unique
+              TAG=${{ github.sha }}
+              FULL_IMAGE="${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:$TAG"
+              echo "Construction de l'image : $FULL_IMAGE"
+              cd app/src
+              docker build -t $FULL_IMAGE .
+              docker push $FULL_IMAGE
+
+          - name: cupérer le contexte AKS
+            uses: azure/aks-set-context@v3
+            with: 
+                resource-group: ${{ env.RG_NAME }}
+                cluster-name: ${{ env.CLUSTER_NAME }} 
+
+          - name: Déploiement K8s (Zero-Downtime)
+            run: |
+               TAG=${{ github.sha }}
+               FULL_IMAGE="${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:$TAG"
+
+               # L'astuce DevOps : on remplace le placeholder par la vraie image dans le YAML
+               sed -i "s|image: __IMAGE_FULL_URL__|image: $FULL_IMAGE|g" app/deploy/webapp.yaml
+
+               # On demande à K8s d'appliquer la mise à jour
+               kubectl apply -f app/deploy/webapp.yaml
+          
+
