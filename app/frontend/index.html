@@ -2,18 +2,38 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Mon App Cloud-Native</title>
+    <title>Mon App Cloud Native</title>
     <style>
-        body { font-family: Arial, sans-serif; background-color: #282c34; color: white; text-align: center; padding-top: 100px; }
-        h1 { color: #61dafb; }
-        .badge { background-color: #0078D4; padding: 10px 20px; border-radius: 5px; font-weight: bold; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; text-align: center; margin-top: 100px; background-color: #f0f2f5; }
+        .card { background: white; padding: 40px; border-radius: 15px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); display: inline-block; }
+        h1 { color: #2c3e50; }
+        .counter { font-size: 3em; color: #3498db; font-weight: bold; margin: 20px 0; }
+        .footer { margin-top: 20px; font-size: 0.9em; color: #7f8c8d; }
     </style>
 </head>
 <body>
-    <h1>🚀 Bienvenue sur mon cluster AKS !</h1>
-    <h1>🚀 Pipeline CI/CD Validé - Abdessamad  </h1>
-    <p>Cette application tourne dans un conteneur Docker orchestré par Kubernetes.</p>
-    <br>
-    <span class="badge">V2.0 - Déploiement réussi</span>
+    <div class="card">
+        <h1>🚀 Architecture K8s 3-Tiers</h1>
+        <p>Frontend (Nginx) ➡️ Backend (FastAPI) ➡️ BDD (Redis)</p>
+        
+        <div class="counter" id="visits">⏳...</div>
+        
+        <p>visiteurs uniques</p>
+        <div class="footer">Propulsé par AKS & Ingress NGINX</div>
+    </div>
+
+    <script>
+        // La magie opère ici : Le navigateur demande les données au backend via l'Ingress
+        fetch('/api')
+            .then(response => response.json())
+            .then(data => {
+                // On met à jour le chiffre sur la page !
+                document.getElementById('visits').innerText = data.visits;
+            })
+            .catch(error => {
+                document.getElementById('visits').innerText = "Erreur 🔴";
+                console.error("Impossible de joindre l'API :", error);
+            });
+    </script>
 </body>
 </html>
