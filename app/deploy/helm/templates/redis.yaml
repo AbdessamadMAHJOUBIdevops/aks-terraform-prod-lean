@@ -14,17 +14,17 @@ spec:
     spec:
       containers:
       - name: redis
-        image: redis:7-alpine
+        image: {{ .Values.redis.image }}
         ports:
-        - containerPort: 6379
+        - containerPort: {{ .Values.redis.port }}
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: redis-service # C'est ce nom que le backend va chercher
+  name: redis-service
 spec:
   selector:
     app: redis
   ports:
-  - port: 6379
-    targetPort: 6379
+  - port: {{ .Values.redis.port }}
+    targetPort: {{ .Values.redis.port }}

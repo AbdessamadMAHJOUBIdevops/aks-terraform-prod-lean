@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: backend
 spec:
-  replicas: 1
+  replicas: {{ .Values.backend.replicaCount }}
   selector:
     matchLabels:
       app: backend
@@ -14,12 +14,12 @@ spec:
     spec:
       containers:
       - name: backend
-        image: __BACKEND_IMAGE__
+        image: {{ .Values.backend.image }}
         ports:
-        - containerPort: 8000
+        - containerPort: {{ .Values.backend.port }}
         env:
         - name: REDIS_HOST
-          value: "redis-service" # Le pont magique vers la DB
+          value: "redis-service"
 ---
 apiVersion: v1
 kind: Service
@@ -29,5 +29,5 @@ spec:
   selector:
     app: backend
   ports:
-  - port: 8000
-    targetPort: 8000
+  - port: {{ .Values.backend.port }}
+    targetPort: {{ .Values.backend.port }}

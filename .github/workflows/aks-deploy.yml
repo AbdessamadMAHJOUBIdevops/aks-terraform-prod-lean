@@ -72,9 +72,12 @@ jobs:
         uses: azure/aks-set-context@v3
         with: 
           resource-group: ${{ env.RG_NAME }}
-          cluster-name: ${{ env.CLUSTER_NAME }} 
+          cluster-name: ${{ env.CLUSTER_NAME }}
 
-      - name:  Déploiement K8s (Microservices)
+      - name: Installation de Helm
+        uses: azure/setup-helm@v4 
+
+      - name:  Déploiement K8s avec Helm
         run: |
           TAG=${{ github.sha }}
           
@@ -82,9 +85,9 @@ jobs:
           FRONTEND_IMAGE="${{ env.ACR_NAME }}.azurecr.io/frontend:$TAG"
           BACKEND_IMAGE="${{ env.ACR_NAME }}.azurecr.io/backend:$TAG"
 
-          # On remplace les mots magiques dans nos fichiers YAML avec sed
-          sed -i "s|__FRONTEND_IMAGE__|$FRONTEND_IMAGE|g" app/deploy/frontend.yaml
-          sed -i "s|__BACKEND_IMAGE__|$BACKEND_IMAGE|g" app/deploy/backend.yaml
-
-          # On déploie les 3 fichiers (Redis, Backend, Frontend) d'un coup !
-          kubectl apply -f app/deploy/
+          # On utilise la commande "helm upgrade --install"
+          # C'est magique : si l'app n'existe pas, il l'installe. Si elle existe, il la met à jour !
+          helm upgrade --install cloudnative-app ./app/deploy/helm \
+            --set frontend.image=$FRONTEND_IMAGE \
+            --set backend.image=$BACKEND_IMAGE \
+            --namespace default

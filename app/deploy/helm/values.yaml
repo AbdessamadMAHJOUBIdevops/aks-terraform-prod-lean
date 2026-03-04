@@ -1,0 +1,18 @@
+# Fichier de configuration centralisé
+
+# Variables du Frontend
+frontend:
+  replicaCount: 1
+  image: "mon-acr.azurecr.io/frontend:latest"
+  port: 80
+
+# Variables du Backend
+backend:
+  replicaCount: 1
+  image: "mon-acr.azurecr.io/backend:latest"
+  port: 8000
+
+# Variables de la base de données
+redis:
+  image: "redis:7-alpine"
+  port: 6379

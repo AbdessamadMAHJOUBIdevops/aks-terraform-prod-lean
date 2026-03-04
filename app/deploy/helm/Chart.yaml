@@ -1,0 +1,6 @@
+apiVersion: v2
+name: cloudnative-app
+description: Un super package Helm pour mon architecture 3-Tiers (Frontend, Backend, Redis)
+type: application
+version: 1.0.0
+appVersion: "1.0"
