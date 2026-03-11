@@ -1,0 +1,14 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: backend-monitor
+  labels:
+    #  TRÈS IMPORTANT : C'est le "mot de passe" pour que le Prometheus qu'on a installé détecte ce fichier
+    release: monitoring 
+spec:
+  selector:
+    matchLabels:
+      app: backend
+  endpoints:
+  - port: http-api #  Le radar vise le port qu'on vient de nommer !
+    path: /metrics
