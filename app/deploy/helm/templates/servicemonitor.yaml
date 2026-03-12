@@ -10,5 +10,5 @@ spec:
     matchLabels:
       app: backend
   endpoints:
-  - port: http-api #  Le radar vise le port qu'on vient de nommer !
-    path: /metrics
+  - port: http-api #  Le radar vise le port qu'on vient de nommer 
+    path: /metrics  
