@@ -3,7 +3,7 @@ kind: ServiceMonitor
 metadata:
   name: backend-monitor
   labels:
-    #  TRÈS IMPORTANT : C'est le "mot de passe" pour que le Prometheus qu'on a installé détecte ce fichier
+    #  C'est le "mot de passe" pour que le Prometheus qu'on a installé détecte ce fichier 
     release: monitoring 
 spec:
   selector:
