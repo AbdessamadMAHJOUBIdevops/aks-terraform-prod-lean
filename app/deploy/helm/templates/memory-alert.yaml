@@ -1,21 +1,22 @@
+---
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
   name: aks-memory-alerts
   namespace: monitoring
   labels:
-    # Important : ce label permet à l'Opérateur Prometheus de découvrir cette règle.
-    # Assurez-vous qu'il correspond à la configuration de votre Helm (souvent "release: prometheus" ou "release: kube-prometheus-stack")
-    release: prometheus 
+    release: prometheus
 spec:
   groups:
-  - name: kubernetes-resources
-    rules:
-    - alert: ContainerHighMemory
-      expr: (container_memory_usage_bytes / container_spec_memory_limit_bytes) > 0.9
-      for: 5m
-      labels:
-        severity: warning
-      annotations:
-        summary: "Le conteneur {{ $labels.container }} manque de RAM"
-        description: "Le conteneur {{ $labels.container }} du pod {{ $labels.namespace }}/{{ $labels.pod }} utilise plus de 90% de sa mémoire allouée depuis 5 minutes."
+    - name: kubernetes-resources
+      rules:
+        - alert: ContainerHighMemory
+          expr: (container_memory_usage_bytes / container_spec_memory_limit_bytes) > 0.9
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: Le conteneur {{ "{{ $labels.container }}" }} manque de RAM
+            description: Le conteneur {{ "{{ $labels.container }}" }} du pod {{ "{{
+              $labels.namespace }}" }}/{{ "{{ $labels.pod }}" }} utilise plus de
+              90% de sa mémoire allouée depuis 5 minutes.
