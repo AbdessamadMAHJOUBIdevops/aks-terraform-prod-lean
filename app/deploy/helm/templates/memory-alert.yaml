@@ -5,7 +5,7 @@ metadata:
   name: aks-memory-alerts
   namespace: monitoring
   labels:
-    release: prometheus
+    release: monitoring
 spec:
   groups:
     - name: kubernetes-resources
