@@ -16,7 +16,5 @@ spec:
           labels:
             severity: warning
           annotations:
-            summary: Le conteneur {{ "{{ $labels.container }}" }} manque de RAM
-            description: Le conteneur {{ "{{ $labels.container }}" }} du pod {{ "{{
-              $labels.namespace }}" }}/{{ "{{ $labels.pod }}" }} utilise plus de
-              90% de sa mémoire allouée depuis 5 minutes.
+            summary: "Le conteneur {{`{{ $labels.container }}`}} manque de RAM"
+            description: "Le conteneur {{`{{ $labels.container }}`}} du pod {{`{{ $labels.namespace }}`}}/{{`{{ $labels.pod }}`}} utilise plus de 90% de sa mémoire allouée depuis 5 minutes."
