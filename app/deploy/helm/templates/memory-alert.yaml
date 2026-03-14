@@ -2,7 +2,7 @@
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
-  name: aks-memory-alerts
+  name: kube-prometheus-stack
   namespace: monitoring
   labels:
     release: monitoring
@@ -18,3 +18,15 @@ spec:
           annotations:
             summary: "Le conteneur {{`{{ $labels.container }}`}} manque de RAM"
             description: "Le conteneur {{`{{ $labels.container }}`}} du pod {{`{{ $labels.namespace }}`}}/{{`{{ $labels.pod }}`}} utilise plus de 90% de sa mémoire allouée depuis 5 minutes."
+
+        - alert: KubernetesPodCrashLoopBack
+          expr: kube_pod_container_status_restarts_total > 5
+          for: 0m
+          labels:
+            severity: critical
+            namespace: monitoring
+          annotations:
+            description: "Pod {{ $labels.pod }} is crash looping\n  Value = {{ $value }}"
+            summary: Kubernetes pod crash looping
+          
+
