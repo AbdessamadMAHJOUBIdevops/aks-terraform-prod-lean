@@ -27,6 +27,6 @@ spec:
             namespace: monitoring
           annotations:
              description: "Pod {{`{{ $labels.pod }}`}} is crash looping\n  Value = {{`{{ $value }}`}}"
-             summary: Kubernetes pod crash looping
+             summary: Kubernetes pod crash looping back
           
 
