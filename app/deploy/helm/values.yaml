@@ -1,5 +1,8 @@
 # Fichier de configuration centralisé
 
+#  Secret injecté par la CI/CD (GitHub Actions)
+gmailPassword: ""
+
 # Variables du Frontend
 frontend:
   replicaCount: 1

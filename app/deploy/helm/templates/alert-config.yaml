@@ -1,0 +1,30 @@
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: AlertmanagerConfig
+metadata:
+  name: email-config
+  namespace: monitoring
+  labels:
+    # C'est ce label qui dit à l'opérateur Prometheus de lire ce fichier
+    release: monitoring 
+spec:
+  route:
+    groupBy: ['alertname']
+    receiver: 'gmail-receiver'
+    # On filtre : on n'envoie un e-mail QUE si c'est une alerte "critical" !
+    matchers:
+      - name: severity
+        value: critical
+        matchType: =
+  receivers:
+  - name: 'gmail-receiver'
+    emailConfigs:
+    - to: 'abdessamad.mahjoubi2001@gmail.com'
+      from: 'abdessamad.mahjoubi2001@gmail.com'
+      smarthost: 'smtp.gmail.com:587'
+      authUsername: 'abdessamad.mahjoubi2001@gmail.com'
+      #  La magie K8s : on va chercher le mot de passe dans le Secret !
+      authPassword:
+        name: gmail-auth
+        key: password
+      requireTLS: true
+      sendResolved: true

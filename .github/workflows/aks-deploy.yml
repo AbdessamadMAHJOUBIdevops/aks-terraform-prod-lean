@@ -90,4 +90,5 @@ jobs:
           helm upgrade --install cloudnative-app ./app/deploy/helm \
             --set frontend.image=$FRONTEND_IMAGE \
             --set backend.image=$BACKEND_IMAGE \
+            --set gmailPassword="${{ secrets.GMAIL_APP_PASSWORD }}" \
             --namespace default
