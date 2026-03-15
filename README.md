@@ -21,7 +21,7 @@ Voici la topologie complète de la plateforme, du pipeline de déploiement jusqu
 ```mermaid
 graph TD
     %% CI/CD Pipeline
-    subgraph CI/CD [GitHub Actions]
+    subgraph CICD["GitHub Actions"]
         TF[Terraform Infra]
         BD[Build & Push Images]
         HD[Helm Deploy]
@@ -29,9 +29,9 @@ graph TD
     end
 
     %% Azure Infrastructure
-    subgraph Azure Cloud [Azure - France Central]
-        subgraph Network [VNet: 10.0.0.0/8]
-            subgraph Subnet [AKS Subnet: 10.240.0.0/16]
+    subgraph AzureCloud["Azure - France Central"]
+        subgraph Network["VNet: 10.0.0.0/8"]
+            subgraph Subnet["AKS Subnet: 10.240.0.0/16"]
                 AKS[AKS Cluster \n Node: Standard_B2s]
             end
         end
@@ -41,16 +41,16 @@ graph TD
     end
 
     %% Kubernetes Cluster Internals
-    subgraph Kubernetes [AKS / Helm Release]
+    subgraph Kubernetes["AKS / Helm Release"]
         ING[Nginx Ingress Controller]
         
-        subgraph App [Namespace: default]
+        subgraph App["Namespace: default"]
             FE[Frontend Deployment \n Nginx Alpine]
             BE[Backend Deployment \n FastAPI + Python]
             DB[(Redis)]
         end
         
-        subgraph SRE [Namespace: monitoring]
+        subgraph SRE["Namespace: monitoring"]
             PROM[Prometheus Operator]
             AM[Alertmanager \n Email Alerts]
             SM[ServiceMonitor \n /metrics]
@@ -58,7 +58,7 @@ graph TD
     end
 
     %% Workflows
-    TF -- "OIDC Auth (No Passwords)" --> Azure Cloud
+    TF -- "OIDC Auth (No Passwords)" --> AzureCloud
     BD -- "Push Images" --> ACR
     HD -- "Deploy Chart" --> Kubernetes
     
@@ -72,3 +72,9 @@ graph TD
     PROM -. "Scrapes" .-> SM
     SM -. "Monitors" .-> BE
     PROM -- "Triggers Critical" --> AM
+
+
+
+    
+
+    
